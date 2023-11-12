@@ -1,0 +1,26 @@
+version: '3'
+services:
+  database:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    ports:
+      - 1433:1433
+    environment:
+      - MSSQL_SA_PASSWORD=VaEpSIOGX5MRT36
+      - ACCEPT_EULA=Y
+  
+  databaseseed:
+    build: 
+      context: ./database_seed
+    command: " -S database -C -U sa -P VaEpSIOGX5MRT36 -i /tmp/seed.sql"
+    depends_on:
+      - database
+  
+  api:
+    build: 
+      context: ./api
+    depends_on:
+      - database
+      - databaseseed
+    ports:
+      - 80
+    restart: always

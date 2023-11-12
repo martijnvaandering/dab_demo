@@ -1,0 +1,9 @@
+FROM mcr.microsoft.com/dotnet/sdk:6.0 as builder
+RUN mkdir /temp/ && cd /temp
+WORKDIR /temp
+RUN dotnet tool install --global Microsoft.DataApiBuilder
+RUN /root/.dotnet/tools/dab init --database-type "mssql" --connection-string "Server=database;Database=EcommerceDB;User ID=sa;Password=VaEpSIOGX5MRT36;TrustServerCertificate=true" --host-mode "Development"
+RUN /root/.dotnet/tools/dab add Order --source dbo.OrderTable --permissions "anonymous:*"
+
+FROM mcr.microsoft.com/azure-databases/data-api-builder
+COPY --from=builder /temp/dab-config.json /App/dab-config.json

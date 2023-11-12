@@ -1,0 +1,4 @@
+FROM fabiang/sqlcmd
+COPY seed.sql /tmp/
+COPY startup.sh /
+ENTRYPOINT ["/startup.sh"]
